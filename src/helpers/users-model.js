@@ -3,6 +3,7 @@ const db = require('../db-config');
 module.exports = {
   insert,
   find,
+  findBy,
   findById,
   update,
   remove
@@ -30,10 +31,17 @@ async function findById(id) {
   return rest;
 }
 
+function findBy(filter) {
+  return db('users')
+    .where(filter)
+    .first();
+}
+
 async function update(id, user) {
   const updatedUser = await db('users')
     .where({ id })
     .update(user);
+
   if (updatedUser) {
     const user = await findById(id);
     return user;
