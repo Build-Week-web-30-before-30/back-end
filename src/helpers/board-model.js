@@ -50,11 +50,11 @@ async function remove(id) {
 }
 
 async function update(board, id) {
-  const editiedBoard = await db('boards')
+  const updatedBoard = await db('boards')
     .where({ id })
     .update(board);
 
-  if (editiedBoard) {
+  if (updatedBoard) {
     const board = await findById(id);
     return board;
   }
