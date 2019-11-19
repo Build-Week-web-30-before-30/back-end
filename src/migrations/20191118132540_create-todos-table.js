@@ -3,7 +3,7 @@ exports.up = function(knex) {
     tbl.increments();
     tbl.string('description', 400).notNullable();
     tbl.boolean('completed').defaultTo(false);
-    tbl.text('link(s)');
+    tbl.text('links');
     tbl
       .integer('board_id')
       .notNullable()

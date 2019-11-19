@@ -18,7 +18,7 @@ async function insert(board) {
 }
 
 async function find() {
-  const board = await db('boards').select('id', 'name', 'deadline', 'private');
+  const board = await db('boards');
   return board;
 }
 
