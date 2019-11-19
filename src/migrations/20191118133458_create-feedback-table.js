@@ -7,11 +7,6 @@ exports.up = function(knex) {
       .notNullable()
       .unsigned()
       .references('boards.id');
-    tbl
-      .integer('todo_id')
-      .notNullable()
-      .unsigned()
-      .references('todos.id');
   });
 };
 
