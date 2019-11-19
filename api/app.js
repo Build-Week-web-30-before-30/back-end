@@ -6,6 +6,7 @@ const userRouter = require('../src/routers/user-router');
 const authRouter = require('../src/routers/auth-router');
 const boardRouter = require('../src/routers/board-router');
 const todoRouter = require('../src/routers/todos-router');
+const linkRouter = require('../src/routers/links-router');
 
 const app = express();
 
@@ -19,7 +20,8 @@ app.get('/', (req, res) => {
 
 app.use('/api/', authRouter);
 app.use('/api/users/', userRouter);
-app.use('/api/boards', boardRouter);
-app.use('/api/todos', todoRouter);
+app.use('/api/boards/', boardRouter);
+app.use('/api/todos/', todoRouter);
+app.use('/api/links/', linkRouter);
 
 module.exports = app;
