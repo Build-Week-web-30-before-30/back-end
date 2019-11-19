@@ -4,6 +4,7 @@ module.exports = {
   insert,
   find,
   findById,
+  findByBoard,
   update,
   remove
 };
@@ -26,6 +27,11 @@ async function findById(id) {
     .where({ id })
     .first();
 
+  return todo;
+}
+
+async function findByBoard(board_id) {
+  const todo = await db('todos').where({ board_id });
   return todo;
 }
 

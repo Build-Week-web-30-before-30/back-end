@@ -30,9 +30,8 @@ async function findById(id) {
   return board;
 }
 
-// WIP
-async function findPublic(public) {
-  const board = await db('boards').where({ public });
+async function findPublic() {
+  const board = await db('boards').where({ private: false });
   return board;
 }
 
