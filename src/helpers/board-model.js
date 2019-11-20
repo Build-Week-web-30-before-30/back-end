@@ -2,7 +2,7 @@ const db = require('../db-config');
 
 module.exports = {
   insert,
-  find,
+  findAllByBoard,
   findById,
   findPublic,
   remove,
@@ -17,9 +17,9 @@ async function insert(board) {
     .first();
 }
 
-async function find() {
-  const board = await db('boards');
-  return board;
+async function findAllByBoard(id) {
+  const boards = await db('boards').where({ user_id: id });
+  return boards;
 }
 
 async function findById(id) {
@@ -31,8 +31,10 @@ async function findById(id) {
 }
 
 async function findPublic() {
-  const board = await db('boards').where({ private: false });
-  return board;
+  const board = await db('boards').where({ public: true });
+  if (board) {
+    return board;
+  }
 }
 
 async function remove(id) {

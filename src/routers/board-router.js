@@ -1,29 +1,37 @@
 const router = require('express').Router();
 
-const checkIsPrivate = require('../utils/checkIsPrivate');
+const checkIsPublic = require('../utils/checkIsPublic');
 const checkIsComplete = require('../utils/checkIsCompleted');
 const auth = require('../utils/verify-token');
+
+const { validateBody, validateId } = require('../middleware/validate-board');
 
 const Boards = require('../helpers/board-model');
 const Feedback = require('../helpers/feedback-model');
 const Todos = require('../helpers/todos-model');
 
-router.post('/', auth, async (req, res) => {
+// Add board for specific user
+router.post('/', [auth, validateBody], async (req, res) => {
   try {
-    const { name, user_id } = req.body;
-    const newBoard = await Boards.insert({ name, user_id });
+    const { name, user_id, public } = req.body;
+    const newBoard = await Boards.insert({ name, user_id, public });
 
-    res.status(201).json(checkIsPrivate(newBoard));
+    res.status(201).json(checkIsPublic(newBoard));
   } catch (error) {
     res.status(500).json({ message: 'Unable to add board ' + error.message });
   }
 });
 
-router.get('/', auth, async (req, res) => {
+// Get all public boards
+router.get('/public', auth, async (req, res) => {
   try {
     const boards = await Boards.findPublic();
 
-    res.status(200).json(checkIsPrivate(boards));
+    if (boards.length) {
+      res.status(200).json(checkIsPublic(boards));
+    } else {
+      res.json({ message: 'Found 0 public boards' });
+    }
   } catch (error) {
     res
       .status(500)
@@ -31,31 +39,50 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-router.get('/:id', auth, async (req, res) => {
+// Get all boards for a user
+router.get('/user/:id', [auth, validateId], async (req, res) => {
+  try {
+    const { id } = req.params;
+    const boards = await Boards.findAllByBoard(id);
+
+    if (boards.length) {
+      res.status(200).json(checkIsPublic(boards));
+    } else {
+      res.json({ message: 'Board does not exist' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Unable to fetch boards ' + error.message });
+  }
+});
+
+// Get board by id
+router.get('/:id', [auth, validateId], async (req, res) => {
   try {
     const { id } = req.params;
     const board = await Boards.findById(id);
 
-    res.status(200).json(checkIsPrivate(board));
+    res.status(200).json(checkIsPublic(board));
   } catch (error) {
     res.status(500).json({ message: 'Unable to fetch board ' + error.message });
   }
 });
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', [auth, validateId, validateBody], async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, deadline, private } = req.body;
+    const { name, deadline, public } = req.body;
 
     const boardToUpdate = await Boards.update(
       {
         name,
         deadline,
-        private
+        public
       },
       id
     );
-    res.status(200).json(checkIsPrivate(boardToUpdate));
+    res.status(200).json(checkIsPublic(boardToUpdate));
   } catch (error) {
     res
       .status(500)
@@ -63,7 +90,7 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', [auth, validateId], async (req, res) => {
   try {
     const { id } = req.params;
     const deletedBoard = await Boards.remove(id);

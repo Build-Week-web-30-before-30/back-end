@@ -2,10 +2,14 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 
 const generateToken = require('../utils/generate-token');
+const {
+  validateRegistration,
+  validateLogin
+} = require('../middleware/validate-user');
 
 const Users = require('../helpers/users-model');
 
-router.post('/register', async (req, res) => {
+router.post('/register', validateRegistration, async (req, res) => {
   const { name, username, password } = req.body;
   const hash = bcrypt.hashSync(password, 8);
 
@@ -25,7 +29,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', validateLogin, async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await Users.findBy({ username });
