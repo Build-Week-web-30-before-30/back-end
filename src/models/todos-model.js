@@ -18,7 +18,7 @@ async function insert(todo) {
 }
 
 async function find() {
-  const todos = await db('todos').select('id', 'description', 'completed');
+  const todos = await db('todos').select('id', 'todo', 'completed');
   return todos;
 }
 

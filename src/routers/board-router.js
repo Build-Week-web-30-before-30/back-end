@@ -70,16 +70,17 @@ router.get('/:id', [auth, validateId], async (req, res) => {
 });
 
 // Update Board Information
-router.put('/:id', [auth, validateId, validateBody], async (req, res) => {
+router.put('/:id', [auth, validateId], async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, deadline, public } = req.body;
+    const { name, deadline, public, user_id = id } = req.body;
 
     const boardToUpdate = await Boards.update(
       {
         name,
         deadline,
-        public
+        public,
+        user_id
       },
       id
     );
@@ -142,8 +143,8 @@ router.get('/:id/feedback', auth, async (req, res) => {
 // Add todos to board
 router.post('/:id/todos', auth, async (req, res) => {
   try {
-    const { description, completed, board_id } = req.body;
-    const newTodo = await Todos.insert({ description, completed, board_id });
+    const { todo, completed, board_id } = req.body;
+    const newTodo = await Todos.insert({ todo, completed, board_id });
 
     res.status(201).json({
       message: 'Todo added successfully',

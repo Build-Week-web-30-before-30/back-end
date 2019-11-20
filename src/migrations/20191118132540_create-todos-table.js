@@ -1,7 +1,7 @@
 exports.up = function(knex) {
   return knex.schema.createTable('todos', tbl => {
     tbl.increments();
-    tbl.string('description', 400).notNullable();
+    tbl.string('todo', 400).notNullable();
     tbl.boolean('completed').defaultTo(false);
     tbl
       .integer('board_id')
