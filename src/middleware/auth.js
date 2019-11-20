@@ -13,6 +13,6 @@ module.exports = (req, res, next) => {
       }
     });
   } else {
-    res.status(401).json({ message: 'You shall not pass!' });
+    res.status(401).json({ message: 'Invalid credentials' });
   }
 };

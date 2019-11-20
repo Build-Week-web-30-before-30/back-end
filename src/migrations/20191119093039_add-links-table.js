@@ -6,7 +6,9 @@ exports.up = function(knex) {
       .integer('todo_id')
       .notNullable()
       .unsigned()
-      .references('todos.id');
+      .references('todos.id')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
   });
 };
 

@@ -7,7 +7,9 @@ exports.up = function(knex) {
       .integer('board_id')
       .notNullable()
       .unsigned()
-      .references('boards.id');
+      .references('boards.id')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
   });
 };
 

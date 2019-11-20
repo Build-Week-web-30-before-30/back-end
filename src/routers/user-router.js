@@ -1,19 +1,12 @@
 const router = require('express').Router();
-const bcrypt = require('bcryptjs');
 
-const Users = require('../helpers/users-model');
-
-router.post('/', async (req, res) => {
-  const { name, username, password } = req.body;
-  const hash = bcrypt.hashSync(password, 8);
-
-  try {
-    const user = await Users.insert({ name, username, password: hash });
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({ message: 'Could not insert user ' + error.message });
-  }
-});
+const Users = require('../models/users-model');
+const auth = require('../middleware/auth');
+const {
+  checkUserBodyExists,
+  checkUserBodyValues,
+  validateUserId
+} = require('../middleware/validate-user');
 
 router.get('/', async (req, res) => {
   const users = await Users.find();
@@ -21,11 +14,11 @@ router.get('/', async (req, res) => {
   try {
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Could not get users ' + error.message });
+    res.status(500).json({ message: 'Could not get user ' + error.message });
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateUserId, async (req, res) => {
   const { id } = req.params;
   const user = await Users.findById(id);
 
@@ -36,24 +29,33 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { username, name } = req.body;
-  const updatedUser = await Users.update(id, { username, name });
+router.put(
+  '/:id',
+  [auth, validateUserId, checkUserBodyExists, checkUserBodyValues],
+  async (req, res) => {
+    const { id } = req.params;
+    const { username, name } = req.body;
+    const updatedUser = await Users.update(id, { username, name });
 
-  try {
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    res.status(500).json({ message: 'Could not update user ' + error.message });
+    try {
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: 'Could not update user ' + error.message });
+    }
   }
-});
+);
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', validateUserId, async (req, res) => {
   const { id } = req.params;
   const user = await Users.remove(id);
 
   try {
-    res.status(200).json(user);
+    res.status(200).json({
+      message: `User deleted successfully`,
+      user
+    });
   } catch (error) {
     res.status(500).json({ message: 'Could not delete user ' + error.message });
   }

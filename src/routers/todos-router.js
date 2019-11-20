@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const checkIsCompleted = require('../utils/checkIsCompleted');
+const checkIsCompleted = require('../utils/check-is-completed');
 
-const Todos = require('../helpers/todos-model');
+const Todos = require('../models/todos-model');
 
 router.get('/', async (req, res) => {
   try {

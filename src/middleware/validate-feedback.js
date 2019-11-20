@@ -1,4 +1,4 @@
-const Feedback = require('../helpers/feedback-model');
+const Feedback = require('../models/feedback-model');
 
 const validateBody = (req, res, next) => {
   if (!Object.keys(req.body).length) {

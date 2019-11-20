@@ -1,4 +1,4 @@
-const Boards = require('../helpers/board-model');
+const Boards = require('../models/board-model');
 
 const validateBody = async (req, res, next) => {
   if (!Object.keys(req.body).length) {

@@ -1,14 +1,14 @@
 const router = require('express').Router();
 
-const checkIsPublic = require('../utils/checkIsPublic');
-const checkIsComplete = require('../utils/checkIsCompleted');
+const checkIsPublic = require('../utils/check-is-public');
+const checkIsComplete = require('../utils/check-is-completed');
 const auth = require('../utils/verify-token');
 
 const { validateBody, validateId } = require('../middleware/validate-board');
 
-const Boards = require('../helpers/board-model');
-const Feedback = require('../helpers/feedback-model');
-const Todos = require('../helpers/todos-model');
+const Boards = require('../models/board-model');
+const Feedback = require('../models/feedback-model');
+const Todos = require('../models/todos-model');
 
 // Add board for specific user
 router.post('/', [auth, validateBody], async (req, res) => {
@@ -69,6 +69,7 @@ router.get('/:id', [auth, validateId], async (req, res) => {
   }
 });
 
+// Update Board Information
 router.put('/:id', [auth, validateId, validateBody], async (req, res) => {
   try {
     const { id } = req.params;
@@ -90,6 +91,7 @@ router.put('/:id', [auth, validateId, validateBody], async (req, res) => {
   }
 });
 
+// Delete Board
 router.delete('/:id', [auth, validateId], async (req, res) => {
   try {
     const { id } = req.params;
@@ -105,6 +107,7 @@ router.delete('/:id', [auth, validateId], async (req, res) => {
   }
 });
 
+// Add Feedback for board
 router.post('/:id/feedback', auth, async (req, res) => {
   try {
     const newFeedback = {
@@ -122,6 +125,7 @@ router.post('/:id/feedback', auth, async (req, res) => {
   }
 });
 
+// Fetch baord feedback
 router.get('/:id/feedback', auth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -135,6 +139,7 @@ router.get('/:id/feedback', auth, async (req, res) => {
   }
 });
 
+// Add todos to board
 router.post('/:id/todos', auth, async (req, res) => {
   try {
     const { description, completed, board_id } = req.body;
@@ -149,6 +154,7 @@ router.post('/:id/todos', auth, async (req, res) => {
   }
 });
 
+// Fetch todos for board
 router.get('/:id/todos', auth, async (req, res) => {
   try {
     const { id } = req.params;

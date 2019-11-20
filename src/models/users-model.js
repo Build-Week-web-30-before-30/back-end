@@ -12,14 +12,19 @@ module.exports = {
 async function insert(user) {
   const [id] = await db('users').insert(user, 'id');
 
-  return db('users')
-    .where({ id })
-    .first();
+  return findById(id);
 }
 
 async function find() {
-  const users = await db('users');
+  const users = await db('users').select('id', 'name', 'username');
   return users;
+}
+
+async function findBy(username) {
+  const user = await db('users')
+    .where({ username })
+    .first();
+  return user;
 }
 
 async function findById(id) {
@@ -27,14 +32,7 @@ async function findById(id) {
     .where({ id })
     .first();
 
-  const { ...rest } = user;
-  return rest;
-}
-
-function findBy(filter) {
-  return db('users')
-    .where(filter)
-    .first();
+  return user;
 }
 
 async function update(id, user) {

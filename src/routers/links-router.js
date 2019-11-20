@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const Links = require('../helpers/links-model');
+const Links = require('../models/links-model');
 
 router.post('/', async (req, res) => {
   try {

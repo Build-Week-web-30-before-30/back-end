@@ -7,18 +7,15 @@ exports.seed = function(knex) {
       return knex('feedback').insert([
         {
           description: 'Great Idea',
-          board_id: 1,
-          todo_id: 1
+          board_id: 1
         },
         {
           description: 'Did this last year recommend',
-          board_id: 2,
-          todo_id: 2
+          board_id: 2
         },
         {
           description: 'Scary',
-          board_id: 3,
-          todo_id: 3
+          board_id: 3
         }
       ]);
     });
