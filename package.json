@@ -6,8 +6,13 @@
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js",
-    "test": "jest --watch --verbose",
+    "test": "cross-env NODE_ENV=testing jest --watch --verbose",
     "migrate": "npx knex migrate:latest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "repository": {
     "type": "git",
