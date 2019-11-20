@@ -1,14 +1,15 @@
 exports.up = function(knex) {
   return knex.schema.createTable('todos', tbl => {
     tbl.increments();
-    tbl.string('description', 400).notNullable();
+    tbl.string('todo', 400).notNullable();
     tbl.boolean('completed').defaultTo(false);
-    tbl.text('link(s)');
     tbl
       .integer('board_id')
       .notNullable()
       .unsigned()
-      .references('boards.id');
+      .references('boards.id')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
   });
 };
 
