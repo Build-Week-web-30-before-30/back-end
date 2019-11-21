@@ -13,8 +13,8 @@ const Todos = require('../models/todos-model');
 // Add board for specific user
 router.post('/', [auth, validateBody], async (req, res) => {
   try {
-    const { name, user_id, isPublic } = req.body;
-    const newBoard = await Boards.insert({ name, user_id, isPublic });
+    const { name, user_id, isPublic, deadline } = req.body;
+    const newBoard = await Boards.insert({ name, user_id, isPublic, deadline });
 
     res.status(201).json(checkIsPublic(newBoard));
   } catch (error) {

@@ -4,6 +4,7 @@ const db = require('../../db-config');
 
 beforeEach(async () => {
   await db('users').truncate();
+  jest.setTimeout(10000);
 });
 
 const registerURL = '/api/auth/register';
