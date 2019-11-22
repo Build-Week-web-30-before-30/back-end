@@ -3,7 +3,7 @@ exports.up = function(knex) {
     tbl.increments();
     tbl.string('name', 128).notNullable();
     tbl.string('deadline');
-    tbl.boolean('public').defaultTo(false);
+    tbl.boolean('isPublic').defaultTo(false);
     tbl
       .integer('user_id')
       .notNullable()

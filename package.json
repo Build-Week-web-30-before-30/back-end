@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js",
-    "test": "jest --watch --verbose",
-    "migrate": "npx knex migrate:latest"
+    "test": "cross-env NODE_ENV=testing SECRET=testingthebackend jest --watch --verbose",
+    "migrate": "npx knex migrate:latest",
+    "seed": "npx knex seed:run"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,4 @@
-const db = require('../db-config');
+const db = require('../db/db-config');
 
 module.exports = {
   insert,
@@ -31,7 +31,7 @@ async function findById(id) {
 }
 
 async function findPublic() {
-  const board = await db('boards').where({ public: true });
+  const board = await db('boards').where({ isPublic: true });
   if (board) {
     return board;
   }

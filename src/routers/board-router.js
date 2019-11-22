@@ -13,8 +13,8 @@ const Todos = require('../models/todos-model');
 // Add board for specific user
 router.post('/', [auth, validateBody], async (req, res) => {
   try {
-    const { name, user_id, public } = req.body;
-    const newBoard = await Boards.insert({ name, user_id, public });
+    const { name, user_id, isPublic, deadline } = req.body;
+    const newBoard = await Boards.insert({ name, user_id, isPublic, deadline });
 
     res.status(201).json(checkIsPublic(newBoard));
   } catch (error) {
@@ -23,7 +23,7 @@ router.post('/', [auth, validateBody], async (req, res) => {
 });
 
 // Get all public boards
-router.get('/public', auth, async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const boards = await Boards.findPublic();
 
@@ -39,14 +39,24 @@ router.get('/public', auth, async (req, res) => {
   }
 });
 
-// Get all boards for a user
-router.get('/user/:id', [auth, validateId], async (req, res) => {
+// Get board for a user
+router.get('/:id', [auth, validateId], async (req, res) => {
   try {
     const { id } = req.params;
-    const boards = await Boards.findAllByBoard(id);
+    const boards = await Boards.findById(id);
+    const todos = await Todos.findByBoard(id);
 
-    if (boards.length) {
-      res.status(200).json(checkIsPublic(boards));
+    const boardsMatch = {
+      id: boards.id,
+      name: boards.name,
+      isPublic: boards.isPublic,
+      user_id: boards.user_id,
+      deadline: boards.deadline,
+      todos: checkIsComplete(todos)
+    };
+
+    if (boardsMatch) {
+      res.status(200).json(checkIsPublic(boardsMatch));
     } else {
       res.json({ message: 'Board does not exist' });
     }
@@ -73,13 +83,13 @@ router.get('/:id', [auth, validateId], async (req, res) => {
 router.put('/:id', [auth, validateId], async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, deadline, public, user_id = id } = req.body;
+    const { name, deadline, isPublic, user_id = id } = req.body;
 
     const boardToUpdate = await Boards.update(
       {
         name,
         deadline,
-        public,
+        isPublic,
         user_id
       },
       id
@@ -96,11 +106,9 @@ router.put('/:id', [auth, validateId], async (req, res) => {
 router.delete('/:id', [auth, validateId], async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedBoard = await Boards.remove(id);
-    res.status(200).json({
-      message: 'Board Deleted',
-      deletedBoard
-    });
+    await Boards.remove(id);
+
+    res.status(200).json({ message: 'Board Deleted' });
   } catch (error) {
     res
       .status(500)
@@ -126,7 +134,7 @@ router.post('/:id/feedback', auth, async (req, res) => {
   }
 });
 
-// Fetch baord feedback
+// Fetch board feedback
 router.get('/:id/feedback', auth, async (req, res) => {
   try {
     const { id } = req.params;
