@@ -2,13 +2,9 @@ const request = require('supertest');
 const db = require('../../db-config');
 const server = require('../../../api/app');
 
-// const Boards = require('../../models/board-model');
-// const Users = require('../../models/users-model');
-
 beforeEach(async () => {
   await db('boards').truncate();
   await db('users').truncate();
-  jest.setTimeout(10000);
 });
 
 const user = {

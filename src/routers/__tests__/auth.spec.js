@@ -4,7 +4,7 @@ const db = require('../../db-config');
 
 beforeEach(async () => {
   await db('users').truncate();
-  jest.setTimeout(10000);
+  jest.setTimeout(5000);
 });
 
 const registerURL = '/api/auth/register';
@@ -36,23 +36,23 @@ describe('Auth router', () => {
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
     });
+  });
 
-    it('should return correct error if no body is entered', async () => {
-      const response = await request(server).post(registerURL);
+  it('should return correct error if no body is entered', async () => {
+    const response = await request(server).post(registerURL);
 
-      expect(response.status).toBe(400);
-      expect(response.body).toEqual({ message: 'Please provide user details' });
-    });
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ message: 'Please provide user details' });
+  });
 
-    it('should return correct error if some fields are missing', async () => {
-      const response = await request(server)
-        .post(registerURL)
-        .send({ name: '', username: 'Liam', password: '1234' });
+  it('should return correct error if some fields are missing', async () => {
+    const response = await request(server)
+      .post(registerURL)
+      .send({ name: '', username: 'Liam', password: '1234' });
 
-      expect(response.status).toBe(400);
-      expect(response.body).toEqual({
-        message: 'Please make sure all fields are filled.'
-      });
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: 'Please make sure all fields are filled.'
     });
   });
 
